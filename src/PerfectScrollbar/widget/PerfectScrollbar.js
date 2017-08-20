@@ -13,14 +13,19 @@ define([
     "dojo/_base/lang",
     "dojo/text",
     "dojo/html",
+    "dojo/query",
     "dojo/_base/event",
-
-
-], function (declare, _WidgetBase, dom, dojoDom, dojoProp, dojoGeometry, dojoClass, dojoStyle, dojoConstruct, dojoArray, lang, dojoText, dojoHtml, dojoEvent) {
+    "PerfectScrollbar/widget/perfect-scrollbar.min",
+    "dojo/text!PerfectScrollbar/widget/ui/perfect-scrollbar.min.css"
+], function (declare, _WidgetBase, dom, dojoDom, dojoProp, dojoGeometry, dojoClass, dojoStyle, dojoConstruct, dojoArray, lang, dojoText, dojoHtml,
+      dojoQuery, dojoEvent, Ps) {
     "use strict";
 
     return declare("PerfectScrollbar.widget.PerfectScrollbar", [ _WidgetBase ], {
 
+        //widget parameters
+        targetClass: "",
+        scrollToAttribute: "",
 
         // Internal variables.
         _handles: null,
@@ -52,13 +57,23 @@ define([
         _updateRendering: function (callback) {
             logger.debug(this.id + "._updateRendering");
 
-            if (this._contextObj !== null) {
-                dojoStyle.set(this.domNode, "display", "block");
-            } else {
-                dojoStyle.set(this.domNode, "display", "none");
-            }
 
+            var container = dojoQuery("."+this.targetClass)[0];
+            if ( container ) {
+              Ps.initialize(container);
+              if ( this._contextObj && this._contextObj.get(this.scrollToAttribute) )
+                this._scrollToMe(container, + (this._contextObj.get(this.scrollToAttribute)+''));
+            }
             this._executeCallback(callback, "_updateRendering");
+        },
+
+        _scrollToMe: function(container, offset) {
+          var self = this;
+          if ( offset == 0 ) return;
+          container.scrollTop = offset;
+          if ( container.scrollTop == 0 )
+            setTimeout(function () { self._scrollToMe(container, offset); } ,50)
+          Ps.update(container);
         },
 
         // Shorthand for running a microflow
