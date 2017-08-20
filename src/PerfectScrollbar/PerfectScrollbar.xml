@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<widget id="PerfectScrollbar.widget.PerfectScrollbar" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/">
+    <name>PerfectScrollbar</name>
+    <description>The description of this widget.</description>
+
+    <icon />
+
+    <properties>
+        <property key="dummyKey" type="string" required="false" defaultValue="">
+            <caption>target class</caption>
+            <category>Appearance</category>
+            <description>Class of a target html element that should be scrollable.</description>
+        </property>
+    </properties>
+</widget>
