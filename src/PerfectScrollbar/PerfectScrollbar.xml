@@ -8,7 +8,7 @@
     <properties>
         <property key="scrollToAttribute" type="attribute" required="false" defaultValue="" allowNonPersistableEntities="true" >
             <caption>Scroll To Attribute</caption>
-            <category>Appearance</category>
+            <category>DataSource</category>
             <description>An integer attribute that initilizes the scrolling to a specific offset.</description>
             <attributeTypes>
                 <attributeType name="Integer"/>
