@@ -6,11 +6,6 @@
     <icon />
 
     <properties>
-        <property key="targetClass" type="string" required="false" defaultValue="">
-            <caption>target class</caption>
-            <category>Appearance</category>
-            <description>Class of a target html element that should be scrollable.</description>
-        </property>
         <property key="scrollToAttribute" type="attribute" required="false" defaultValue="" allowNonPersistableEntities="true" >
             <caption>Scroll To Attribute</caption>
             <category>Appearance</category>
