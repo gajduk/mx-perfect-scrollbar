@@ -1,7 +1,6 @@
 define([
     "dojo/_base/declare",
     "mxui/widget/_WidgetBase",
-
     "mendix/lang",
     "mxui/dom",
     "dojo/dom",
@@ -15,10 +14,9 @@ define([
     "dojo/text",
     "dojo/html",
     "dojo/query",
-    "dojo/_base/event",
-    "PerfectScrollbar/widget/perfect-scrollbar.min"
+    "dojo/_base/event"
 ], function (declare, _WidgetBase, mxlang, dom, dojoDom, dojoProp, dojoGeometry, dojoClass, dojoStyle, dojoConstruct, dojoArray, lang, dojoText, dojoHtml,
-      dojoQuery, dojoEvent, Ps) {
+      dojoQuery, dojoEvent) {
     "use strict";
 
     return declare("PerfectScrollbar.widget.PerfectScrollbar", [ _WidgetBase ], {
@@ -66,8 +64,15 @@ define([
         _scrollToMe: function(container, offset) {
           var self = this;
           if ( offset == 0 ) return;
-          container.scrollTop = offset;
-          Ps.update(container);
+          mxlang.delay(
+            function () {
+                Ps.update(container);
+            },
+            function () {
+              container.scrollTop = offset;
+              return Math.abs((container.scrollTop-offset)/offset)<0.15;
+            },
+            50);
         },
 
         // Shorthand for executing a callback, adds logging to your inspector
