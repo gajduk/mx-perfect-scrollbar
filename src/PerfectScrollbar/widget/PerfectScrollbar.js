@@ -14,15 +14,20 @@ define([
     "dojo/text",
     "dojo/html",
     "dojo/query",
-    "dojo/_base/event"
+    "dojo/_base/event",
+    "PerfectScrollbar/widget/perfect-scrollbar"
 ], function (declare, _WidgetBase, mxlang, dom, dojoDom, dojoProp, dojoGeometry, dojoClass, dojoStyle, dojoConstruct, dojoArray, lang, dojoText, dojoHtml,
-      dojoQuery, dojoEvent) {
+      dojoQuery, dojoEvent,PerfectScrollbarKlass) {
     "use strict";
 
     return declare("PerfectScrollbar.widget.PerfectScrollbar", [ _WidgetBase ], {
 
         //widget parameters
-        scrollToAttribute: "",
+        customOptions: "{}",
+        customOptionsJSON: "",
+        scrollTopAttribute: "",
+        scrollLeftAttribute: "",
+        Ps: "",
 
         // Internal variables.
         _handles: null,
@@ -36,6 +41,12 @@ define([
 
         update: function (obj, callback) {
             this._contextObj = obj;
+            try {
+                this.customOptionsJSON = JSON.parse(this.customOptions);
+            } catch(e) {
+                this.customOptionsJSON = {};
+                console.log("ERROR - CustomOptions could not be parsed to JSON, therefore they will be ignored: "+e); // error in the above string (in this case, yes)!
+            }
             this._updateRendering(callback);
         },
 
@@ -45,13 +56,15 @@ define([
         _activateScrollBar: function() {
           var self = this;
           if ( self._container.classList.contains('ps') ) {
-            Ps.update(self._container);
+            self.Ps.update(self._container);
           }
           else {
-            Ps.initialize(self._container);
+            self.Ps = new PerfectScrollbarKlass(self._container,self.customOptionsJSON);
           }
-          if ( self._contextObj && self._contextObj.get(self.scrollToAttribute) )
-             self._scrollToMe(self._container, + (self._contextObj.get(self.scrollToAttribute)+''));
+          if ( self._contextObj && self._contextObj.get(self.scrollTopAttribute) )
+             self._setElementAttribute(self._container,"scrollTop", + (self._contextObj.get(self.scrollTopAttribute)+""));
+          if ( self._contextObj && self._contextObj.get(self.scrollLeftAttribute) )
+             self._setElementAttribute(self._container,"scrollLeft", + (self._contextObj.get(self.scrollLeftAttribute)+""));
         },
 
         _updateRendering: function (callback) {
@@ -61,18 +74,17 @@ define([
             self._executeCallback(callback, "_updateRendering");
         },
 
-        _scrollToMe: function(container, offset) {
+        _setElementAttribute: function(container, attribute, desiredValue) {
           var self = this;
-          if ( offset == 0 ) return;
-          mxlang.delay(
-            function () {
-                Ps.update(container);
-            },
-            function () {
-              container.scrollTop = offset;
-              return Math.abs((container.scrollTop-offset)/offset)<0.15;
-            },
-            50);
+          if ( desiredValue == 0 ) return;
+          var numTries = 0;
+          !function f(self,numTries) {
+            if ( numTries++ > 35 ) return;
+            self.Ps.update(container);
+            container[attribute] = desiredValue;
+            if ( Math.abs((container[attribute]-desiredValue)/desiredValue)>0.2)
+              setTimeout(function() { f(self,numTries+1); },50);
+          }(self,0);
         },
 
         // Shorthand for executing a callback, adds logging to your inspector

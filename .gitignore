@@ -4,6 +4,8 @@ test/.classpath
 test/.project
 test/theme/
 test/userlib/
+test/.svn
+test/.mendix-cache
 test/.classpath
 test/.project
 *.launch
