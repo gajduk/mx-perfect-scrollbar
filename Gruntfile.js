@@ -26,12 +26,21 @@ var path = require("path"),
     pkg = require("./package.json"),
     currentFolder = shelljs.pwd().toString();
 
-var TEST_PATH = path.join(currentFolder, "/test/Test.mpr");
 var WIDGET_XML = path.join(currentFolder, "/src/", pkg.name, "/", pkg.name + ".xml");
 var PACKAGE_XML = path.join(currentFolder, "/src/package.xml");
-var TEST_WIDGETS_FOLDER = path.join(currentFolder, "./test/widgets");
-var TEST_WIDGETS_DEPLOYMENT_FOLDER = path.join(currentFolder, "./test/deployment/web/widgets");
 
+var TEST_PATH1 = path.join(currentFolder, "/test_7_5_1/Test.mpr");
+var TEST_WIDGETS_FOLDER1 = path.join(currentFolder, "./test_7_5_1/widgets");
+var TEST_WIDGETS_DEPLOYMENT_FOLDER1 = path.join(currentFolder, "./test_7_5_1/deployment/web/widgets");
+
+
+var TEST_PATH2 = path.join(currentFolder, "/test_7_8_0/7-8-0 PScrollTest.mpr");
+var TEST_WIDGETS_FOLDER2 = path.join(currentFolder, "./test_7_8_0/widgets");
+var TEST_WIDGETS_DEPLOYMENT_FOLDER2 = path.join(currentFolder, "./test_7_8_0/deployment/web/widgets");
+
+var TEST_PATH3 = path.join(currentFolder, "/test_6_10_10/6-10-10 PScrollTest.mpr");
+var TEST_WIDGETS_FOLDER3 = path.join(currentFolder, "./test_6_10_10/widgets");
+var TEST_WIDGETS_DEPLOYMENT_FOLDER3 = path.join(currentFolder, "./test_6_10_10/deployment/web/widgets");
 /**
  * If you want to use a custom folder for the test project, make sure these are added to package.json:
  * "paths": {
@@ -46,9 +55,9 @@ if (pkg.paths && pkg.paths.testProjectFolder && pkg.paths.testProjectFileName) {
     if (folder.indexOf(".") === 0) {
         folder = path.join(currentFolder, folder);
     }
-    TEST_PATH = path.join(folder, pkg.paths.testProjectFileName);
-    TEST_WIDGETS_FOLDER = path.join(folder, "/widgets");
-    TEST_WIDGETS_DEPLOYMENT_FOLDER = path.join(folder, "/deployment/web/widgets");
+    TEST_PATH1 = path.join(folder, pkg.paths.testProjectFileName);
+    TEST_WIDGETS_FOLDER1 = path.join(folder, "/widgets");
+    TEST_WIDGETS_DEPLOYMENT_FOLDER1 = path.join(folder, "/deployment/web/widgets");
 }
 
 module.exports = function (grunt) {
@@ -81,12 +90,16 @@ module.exports = function (grunt) {
         copy: {
             deployment: {
                 files: [
-                    { dest: TEST_WIDGETS_DEPLOYMENT_FOLDER, cwd: "./src/", src: ["**/*"], expand: true }
+                    { dest: TEST_WIDGETS_DEPLOYMENT_FOLDER1, cwd: "./src/", src: ["**/*"], expand: true },					
+                    { dest: TEST_WIDGETS_DEPLOYMENT_FOLDER2, cwd: "./src/", src: ["**/*"], expand: true },			
+                    { dest: TEST_WIDGETS_DEPLOYMENT_FOLDER3, cwd: "./src/", src: ["**/*"], expand: true }
                 ]
             },
             mpks: {
                 files: [
-                    { dest: TEST_WIDGETS_FOLDER, cwd: "./dist/", src: [ pkg.name + ".mpk"], expand: true }
+                    { dest: TEST_WIDGETS_FOLDER1, cwd: "./dist/", src: [ pkg.name + ".mpk"], expand: true },
+                    { dest: TEST_WIDGETS_FOLDER2, cwd: "./dist/", src: [ pkg.name + ".mpk"], expand: true },
+                    { dest: TEST_WIDGETS_FOLDER3, cwd: "./dist/", src: [ pkg.name + ".mpk"], expand: true }
                 ]
             }
         },
@@ -118,7 +131,7 @@ module.exports = function (grunt) {
             grunt.util.spawn({
                 cmd: MODELER_PATH || mendixApp.output.cmd,
                 args: [
-                    (MODELER_PATH !== null ? MODELER_ARGS : mendixApp.output.arg).replace("{path}", TEST_PATH)
+                    (MODELER_PATH !== null ? MODELER_ARGS : mendixApp.output.arg).replace("{path}", TEST_PATH1)
                 ]
             }, function () {
                 done();
@@ -204,11 +217,17 @@ module.exports = function (grunt) {
     grunt.registerTask("folders", function () {
         var done = this.async();
         grunt.log.writeln("\nShowing file paths that Grunt will use. You can edit the package.json accordingly\n");
-        grunt.log.writeln("TEST_PATH:                      ", TEST_PATH);
         grunt.log.writeln("WIDGET_XML:                     ", WIDGET_XML);
         grunt.log.writeln("PACKAGE_XML:                    ", PACKAGE_XML);
-        grunt.log.writeln("TEST_WIDGETS_FOLDER:            ", TEST_WIDGETS_FOLDER);
-        grunt.log.writeln("TEST_WIDGETS_DEPLOYMENT_FOLDER: ", TEST_WIDGETS_DEPLOYMENT_FOLDER);
+        grunt.log.writeln("TEST_PATH1:                      ", TEST_PATH1);
+        grunt.log.writeln("TEST_WIDGETS_FOLDER1:            ", TEST_WIDGETS_FOLDER1);
+        grunt.log.writeln("TEST_WIDGETS_DEPLOYMENT_FOLDER1: ", TEST_WIDGETS_DEPLOYMENT_FOLDER1);
+        grunt.log.writeln("TEST_PATH2:                      ", TEST_PATH2);
+        grunt.log.writeln("TEST_WIDGETS_FOLDER2:            ", TEST_WIDGETS_FOLDER2);
+        grunt.log.writeln("TEST_WIDGETS_DEPLOYMENT_FOLDER2: ", TEST_WIDGETS_DEPLOYMENT_FOLDER2);
+        grunt.log.writeln("TEST_PATH3:                      ", TEST_PATH3);
+        grunt.log.writeln("TEST_WIDGETS_FOLDER3:            ", TEST_WIDGETS_FOLDER3);
+        grunt.log.writeln("TEST_WIDGETS_DEPLOYMENT_FOLDER3: ", TEST_WIDGETS_DEPLOYMENT_FOLDER3);
         return done();
     });
 
